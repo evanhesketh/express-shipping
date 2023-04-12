@@ -2,9 +2,18 @@
 
 const request = require("supertest");
 const app = require("../app");
+// const AxiosMockAdapter = require("axios-mock-adapter");
+// const axios = require("axios");
+// const axiosMock = new AxiosMockAdapter(axios);
+
+const { shipProduct } = require("./shipItApi");
+shipProduct = jest.fn();
 
 
 describe("POST /", function () {
+
+
+
   test("valid", async function () {
     const resp = await request(app).post("/shipments").send({
       productId: 1000,

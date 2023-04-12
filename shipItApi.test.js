@@ -1,17 +1,32 @@
 "use strict";
 
-const {
-  shipProduct,
-} = require("./shipItApi");
+const AxiosMockAdapter = require("axios-mock-adapter");
+const axios = require("axios");
+const axiosMock = new AxiosMockAdapter(axios);
+const { SHIPIT_SHIP_URL, shipProduct } = require("./shipItApi.js")
 
+// shipProduct = jest.fn();
 
 test("shipProduct", async function () {
-  const shipId = await shipProduct({
-    productId: 1000,
-    name: "Test Tester",
-    addr: "100 Test St",
-    zip: "12345-6789",
-  });
+  axiosMock.onPost(`${SHIPIT_SHIP_URL}`)
+    .reply(200, {"receipt": {
+      "itemId": 1000,
+      "name": "Test Tester",
+      "addr": "100 Test St",
+      "zip": "12345-6789",
+      "shipId": 3166
+    }
+  })
 
-  expect(shipId).toEqual(expect.any(Number));
+  const res = await shipProduct(
+    {
+      "productId": 1000,
+       "name": "Test Tester",
+       "addr": "100 Test St",
+       "zip": "12345-6789"
+    }
+  );
+  expect(res).toEqual(3166)
 });
+
+//const receipt = { itemId, name, addr, zip, shipId };
